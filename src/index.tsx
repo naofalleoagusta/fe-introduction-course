@@ -1,12 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import routes from './config/routes';
+import Navbar from './components/Navbar';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Navbar />
+      <Switch>
+        {routes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            component={route.component}
+          />
+        ))}
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
