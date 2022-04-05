@@ -1,10 +1,4 @@
-import {
-  AppBar,
-  Container,
-  Grid,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { AppBar, Container, Grid, Toolbar } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -29,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 700,
       letterSpacing: '-3px',
       height: '100%',
+      textDecoration: 'none',
+      color: 'white',
     },
     link: {
       textDecoration: 'none',
@@ -45,9 +41,9 @@ const Navbar: React.FC<{}> = () => {
       <AppBar position="static" className={classes.appBar}>
         <Container>
           <Toolbar className={classes.toolBar}>
-            <Typography variant="h2" className={classes.brand}>
+            <Link to="/" className={classes.brand}>
               Movie.DB
-            </Typography>
+            </Link>
             <div>
               <Link to="/login" className={classes.link}>
                 Login

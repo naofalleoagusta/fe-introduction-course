@@ -11,17 +11,16 @@ import {
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 
-import useAuth from '../../context/useAuth';
-import SignUpText from '../../components/SignUpText';
 import TextInput from '../../components/TextInput';
 import PasswordInput from '../../components/PasswordInput';
+import { Link } from 'react-router-dom';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: '2rem 1rem',
     },
-    loginCard: {
+    RegisterCard: {
       borderRadius: '5px',
       padding: '1.5rem',
       boxShadow:
@@ -43,17 +42,27 @@ const useStyle = makeStyles((theme: Theme) =>
       background: theme.palette.primary.main,
       marginBottom: '0.5rem',
     },
+    link: {
+      color: theme.palette.primary.light,
+      '&:hover': {
+        color: 'black',
+      },
+    },
   })
 );
 
-const Login: React.FC<{}> = () => {
+const Register: React.FC<{}> = () => {
   const classes = useStyle();
-  const auth = useAuth();
   const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,19 +71,26 @@ const Login: React.FC<{}> = () => {
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    auth.login(username, password);
+    console.log(username, password);
   };
 
   return (
     <Container maxWidth="xs" className={classes.root}>
-      <Box className={classes.loginCard}>
+      <Box className={classes.RegisterCard}>
         <Avatar className={classes.avatar}>
           <LockOutlined />
         </Avatar>
         <Typography variant="h1" className={classes.title}>
-          Login
+          Register
         </Typography>
         <form autoComplete="off" onSubmit={handleSubmit}>
+          <TextInput
+            label="Email"
+            id="email"
+            value={email}
+            fullWidth
+            onChange={handleEmailChange}
+          />
           <TextInput
             label="Username"
             id="username"
@@ -89,19 +105,28 @@ const Login: React.FC<{}> = () => {
             fullWidth
             onChange={handlePasswordChange}
           />
+          <PasswordInput
+            label="Confirm Password"
+            id="confirm-password"
+            value={password}
+            fullWidth
+            onChange={handlePasswordChange}
+          />
           <Button
             variant="outlined"
             type="submit"
             fullWidth
             className={classes.btn}
           >
-            Login
+            Register
           </Button>
-          <SignUpText />
+          <Link to="/login" className={classes.link}>
+            Already got an account yet? Login Here
+          </Link>
         </form>
       </Box>
     </Container>
   );
 };
 
-export default Login;
+export default Register;
