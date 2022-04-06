@@ -4,4 +4,6 @@ export type TInput = {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   fullWidth: boolean;
+  error?: boolean;
+  helperText?: string;
 };

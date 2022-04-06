@@ -3,6 +3,7 @@ import { createTheme } from '@material-ui/core/styles';
 export const COLORS = {
   primary: '#111827',
   primary2: '#415786',
+  success: '#2ecc71',
 };
 
 const theme = createTheme({
@@ -41,6 +42,10 @@ const theme = createTheme({
       },
       text: {
         padding: '0.625rem 1.5rem',
+      },
+      disabled: {
+        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+        color: 'rgba(0, 0, 0, 0.26)',
       },
     },
     MuiInputBase: {

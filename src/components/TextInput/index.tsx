@@ -17,6 +17,8 @@ const TextInput: React.FC<TInput> = ({
   value,
   onChange,
   fullWidth,
+  error = false,
+  helperText = '',
 }) => {
   const classes = useStyle();
   return (
@@ -27,6 +29,8 @@ const TextInput: React.FC<TInput> = ({
       fullWidth={fullWidth}
       onChange={onChange}
       className={classes.root}
+      error={error}
+      {...(error && { helperText })}
     />
   );
 };

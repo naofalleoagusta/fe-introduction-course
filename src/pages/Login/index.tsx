@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -11,10 +11,10 @@ import {
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 
-import useAuth from '../../context/useAuth';
 import SignUpText from '../../components/SignUpText';
 import TextInput from '../../components/TextInput';
 import PasswordInput from '../../components/PasswordInput';
+import useAuthRoute from '../../hooks/useAuthRoute';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,14 +43,18 @@ const useStyle = makeStyles((theme: Theme) =>
       background: theme.palette.primary.main,
       marginBottom: '0.5rem',
     },
+    error: {
+      color: 'red',
+    },
   })
 );
 
 const Login: React.FC<{}> = () => {
   const classes = useStyle();
-  const auth = useAuth();
+  const { auth, history, redirect } = useAuthRoute();
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -60,10 +64,22 @@ const Login: React.FC<{}> = () => {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    auth.login(username, password);
+    setError('');
+    try {
+      await auth.login(username, password);
+      history.push('/movie-list');
+    } catch (error) {
+      if (typeof error === 'string') {
+        setError(error);
+      }
+    }
   };
+
+  useEffect(() => {
+    redirect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container maxWidth="xs" className={classes.root}>
@@ -74,6 +90,9 @@ const Login: React.FC<{}> = () => {
         <Typography variant="h1" className={classes.title}>
           Login
         </Typography>
+        {error.length > 0 && (
+          <Typography className={classes.error}>{error}</Typography>
+        )}
         <form autoComplete="off" onSubmit={handleSubmit}>
           <TextInput
             label="Username"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   createStyles,
   FormControl,
+  FormHelperText,
   IconButton,
   Input,
   InputAdornment,
@@ -25,6 +26,8 @@ const PasswordInput: React.FC<TInput> = ({
   id,
   onChange,
   value,
+  error = false,
+  helperText = '',
 }) => {
   const classes = useStyle();
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -40,13 +43,14 @@ const PasswordInput: React.FC<TInput> = ({
   };
 
   return (
-    <FormControl fullWidth={fullWidth} className={classes.root}>
+    <FormControl fullWidth={fullWidth} className={classes.root} error={error}>
       <InputLabel htmlFor={id}>{label}</InputLabel>
       <Input
         id={id}
         type={showPassword ? 'text' : 'password'}
         value={value}
         onChange={onChange}
+        error={error}
         endAdornment={
           <InputAdornment position="end">
             <IconButton
@@ -59,6 +63,7 @@ const PasswordInput: React.FC<TInput> = ({
           </InputAdornment>
         }
       />
+      {error && <FormHelperText error={error}>{helperText}</FormHelperText>}
     </FormControl>
   );
 };

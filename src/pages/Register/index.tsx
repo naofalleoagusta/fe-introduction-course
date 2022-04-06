@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -8,12 +8,15 @@ import {
   makeStyles,
   Typography,
   Theme,
+  Grow,
 } from '@material-ui/core';
-import { LockOutlined } from '@material-ui/icons';
+import { CheckCircle, EmojiPeople } from '@material-ui/icons';
+import { green } from '@material-ui/core/colors';
 
 import TextInput from '../../components/TextInput';
 import PasswordInput from '../../components/PasswordInput';
 import { Link } from 'react-router-dom';
+import useAuthRoute from '../../hooks/useAuthRoute';
 
 const useStyle = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,6 +31,7 @@ const useStyle = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      justifyContent: 'center',
       textAlign: 'center',
     },
     title: {
@@ -51,79 +55,133 @@ const useStyle = makeStyles((theme: Theme) =>
   })
 );
 
+type TRegisterState = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // eslint-disable-line no-useless-escape
+
 const Register: React.FC<{}> = () => {
   const classes = useStyle();
-  const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const { auth, redirect } = useAuthRoute();
+  const [register, setRegister] = useState<TRegisterState>({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const errors = {
+    email: !emailRegex.test(register.email),
+    username: register.username.length < 4,
+    password: register.password.length < 6,
+    confirmPassword: register.password !== register.confirmPassword,
   };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
+  const handleRegisterChange =
+    (key: keyof TRegisterState) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRegister((prevState) => ({ ...prevState, [key]: event.target.value }));
+    };
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(username, password);
+    if (
+      !errors.email &&
+      !errors.username &&
+      !errors.password &&
+      !errors.confirmPassword
+    ) {
+      auth.register(register.email, register.username, register.password);
+      setIsSuccess(true);
+    }
   };
+
+  useEffect(() => {
+    redirect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container maxWidth="xs" className={classes.root}>
       <Box className={classes.RegisterCard}>
-        <Avatar className={classes.avatar}>
-          <LockOutlined />
-        </Avatar>
-        <Typography variant="h1" className={classes.title}>
-          Register
-        </Typography>
-        <form autoComplete="off" onSubmit={handleSubmit}>
-          <TextInput
-            label="Email"
-            id="email"
-            value={email}
-            fullWidth
-            onChange={handleEmailChange}
-          />
-          <TextInput
-            label="Username"
-            id="username"
-            value={username}
-            fullWidth
-            onChange={handleUsernameChange}
-          />
-          <PasswordInput
-            label="Password"
-            id="password"
-            value={password}
-            fullWidth
-            onChange={handlePasswordChange}
-          />
-          <PasswordInput
-            label="Confirm Password"
-            id="confirm-password"
-            value={password}
-            fullWidth
-            onChange={handlePasswordChange}
-          />
-          <Button
-            variant="outlined"
-            type="submit"
-            fullWidth
-            className={classes.btn}
-          >
-            Register
-          </Button>
-          <Link to="/login" className={classes.link}>
-            Already got an account yet? Login Here
-          </Link>
-        </form>
+        {isSuccess ? (
+          <>
+            <Grow in={true} timeout={1000}>
+              <CheckCircle style={{ color: green[500], fontSize: 100 }} />
+            </Grow>
+            <Typography variant="h2" className={classes.title}>
+              Successfully Registered!
+            </Typography>
+            <Typography>
+              Login to explore millions of Movies and TV Shows!.
+            </Typography>
+            <Link to="/login">
+              <Button className={classes.btn}>Login Now!</Button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Avatar className={classes.avatar}>
+              <EmojiPeople />
+            </Avatar>
+            <Typography variant="h2" className={classes.title}>
+              Register
+            </Typography>
+            <form autoComplete="off" onSubmit={handleSubmit}>
+              <TextInput
+                label="Email"
+                id="email"
+                value={register.email}
+                error={errors.email}
+                helperText="Email is not valid"
+                fullWidth
+                onChange={handleRegisterChange('email')}
+              />
+              <TextInput
+                label="Username"
+                id="username"
+                value={register.username}
+                error={errors.username}
+                helperText="Username cannot be less than 4 characters"
+                fullWidth
+                onChange={handleRegisterChange('username')}
+              />
+              <PasswordInput
+                label="Password"
+                id="password"
+                value={register.password}
+                error={errors.password}
+                helperText="Password cannot be less than 6 characters"
+                fullWidth
+                onChange={handleRegisterChange('password')}
+              />
+              <PasswordInput
+                label="Confirm Password"
+                id="confirm-password"
+                value={register.confirmPassword}
+                error={errors.confirmPassword}
+                helperText={'Confirm password is not same as password'}
+                fullWidth
+                onChange={handleRegisterChange('confirmPassword')}
+              />
+              <Button
+                variant="outlined"
+                type="submit"
+                fullWidth
+                className={classes.btn}
+              >
+                Register
+              </Button>
+              <Link to="/login" className={classes.link}>
+                Already got an account yet? Login Here
+              </Link>
+            </form>
+          </>
+        )}
       </Box>
     </Container>
   );
