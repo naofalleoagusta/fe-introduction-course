@@ -43,10 +43,6 @@ const theme = createTheme({
       text: {
         padding: '0.625rem 1.5rem',
       },
-      disabled: {
-        backgroundColor: 'rgba(0, 0, 0, 0.12)',
-        color: 'rgba(0, 0, 0, 0.26)',
-      },
     },
     MuiInputBase: {
       root: {
