@@ -77,9 +77,9 @@ const ShowsList: React.FC<TShowsList> = ({ title, url }) => {
   const scroll = (direction: string) => {
     if (containerRef && containerRef.current) {
       if (direction === 'left') {
-        containerRef.current.scrollLeft -= 500;
+        containerRef.current.scrollLeft -= 300;
       } else {
-        containerRef.current.scrollLeft += 500;
+        containerRef.current.scrollLeft += 300;
       }
     }
   };
