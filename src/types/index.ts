@@ -24,4 +24,5 @@ export type TMovie = {
   overview: string;
   popularity: number;
   media_type: string;
+  name: string | null;
 };

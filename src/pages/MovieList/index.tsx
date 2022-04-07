@@ -8,7 +8,13 @@ import {
 import React from 'react';
 
 import ShowsList from '../../components/Shows/ShowsList';
-import { trendingMovies } from '../../config/api';
+import {
+  topMovies,
+  trendingMovies,
+  trendingTvShow,
+  profitableMovie,
+  topTv,
+} from '../../config/api';
 import useAuth from '../../context/useAuth';
 
 const useStyle = makeStyles((theme: Theme) =>
@@ -28,6 +34,10 @@ const MovieList: React.FC<{}> = () => {
         Welcome, <b>{auth.currentUser?.username}.</b>
       </Typography>
       <ShowsList title="Trending Movies" url={trendingMovies} />
+      <ShowsList title="Trending TV Show" url={trendingTvShow} />
+      <ShowsList title="Top 20 Movies" url={topMovies} />
+      <ShowsList title="Top 20 TV Show" url={topTv} />
+      <ShowsList title="Most Profitable Movies" url={profitableMovie} />
     </Container>
   );
 };
